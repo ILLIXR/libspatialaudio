@@ -37,8 +37,8 @@ extern double t_decode_ifft2_acc;
 
 extern unsigned m_nFFTBins_copy;
 
-extern void fir_acc_offload(kiss_fft_cpx* filter);
-extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT);
+extern void fir_acc_offload(kiss_fft_cpx* filter, bool run_all);
+extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT, bool run_all);
 
 extern unsigned do_fft2_acc_offload;
 extern bool do_fir_acc_offload;
@@ -308,7 +308,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
 
                 if (do_fft2_acc_offload)
                 {
-                    fft2_acc_offload((m_pFFT_cfg.get())->substate, (const kiss_fft_cpx*) m_pfScratchBufferB.data(), (m_pFFT_cfg.get())->tmpbuf, true);
+                    fft2_acc_offload((m_pFFT_cfg.get())->substate, (const kiss_fft_cpx*) m_pfScratchBufferB.data(), (m_pFFT_cfg.get())->tmpbuf, true, run_all);
                 }
                 else
                 {
@@ -325,7 +325,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
                 if (do_fir_acc_offload)
                 {
                     m_nFFTBins_copy = m_nFFTBins;
-                    fir_acc_offload(m_ppcpFilters[niEar][niChannel].get());   // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
+                    fir_acc_offload(m_ppcpFilters[niEar][niChannel].get(), run_all);   // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
                 }
                 else
                 {
@@ -345,7 +345,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
 
                 if (do_fft2_acc_offload)
                 {
-                    fft2_acc_offload((m_pFFT_cfg.get())->substate, (m_pFFT_cfg.get())->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferB.data(), false);
+                    fft2_acc_offload((m_pFFT_cfg.get())->substate, (m_pFFT_cfg.get())->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferB.data(), false, run_all);
                 }
                 else
                 {

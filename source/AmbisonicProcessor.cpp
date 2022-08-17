@@ -41,12 +41,13 @@ unsigned m_nChannelCount_copy;
 unsigned m_nFFTBins_copy;
 
 extern void rotate_order_acc_offload(CBFormat* pBFSrcDst, unsigned nSamples);
-extern void fir_acc_offload(kiss_fft_cpx* filter);
-extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT);
+extern void fir_acc_offload(kiss_fft_cpx* filter, bool run_all);
+extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT, bool run_all);
 
 extern unsigned do_fft2_acc_offload;
 extern bool do_rotate_acc_offload;
 extern bool do_fir_acc_offload;
+extern bool run_all;
 
 struct rotate_params {
     float m_fCosAlpha;
@@ -541,7 +542,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
 
         if (do_fft2_acc_offload)
         {
-            fft2_acc_offload(m_pFFT_psych_cfg->substate, (const kiss_fft_cpx*) m_pfScratchBufferA, m_pFFT_psych_cfg->tmpbuf, true);
+            fft2_acc_offload(m_pFFT_psych_cfg->substate, (const kiss_fft_cpx*) m_pfScratchBufferA, m_pFFT_psych_cfg->tmpbuf, true, run_all);
         }
         else
             {
@@ -559,7 +560,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
         if (do_fir_acc_offload)
         {
             m_nFFTBins_copy = m_nFFTBins;
-            fir_acc_offload(m_ppcpPsychFilters[iChannelOrder]); // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
+            fir_acc_offload(m_ppcpPsychFilters[iChannelOrder], run_all); // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
         }
         else
         {
@@ -579,7 +580,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
 
         if (do_fft2_acc_offload)
         {
-            fft2_acc_offload(m_pIFFT_psych_cfg->substate, m_pIFFT_psych_cfg->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferA, false);
+            fft2_acc_offload(m_pIFFT_psych_cfg->substate, m_pIFFT_psych_cfg->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferA, false, run_all);
         }
         else
         {
