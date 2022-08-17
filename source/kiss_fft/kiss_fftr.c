@@ -82,14 +82,15 @@ void kiss_fftr(kiss_fftr_cfg st,const kiss_fft_scalar *timedata,kiss_fft_cpx *fr
     ncfft = st->substate->nfft;
 
     /*perform the parallel fft of two real signals packed in real,imag*/    
-    if (do_fft2_acc_offload)
-    {
-        fft2_acc_offload_wrap(st->substate , (const kiss_fft_cpx*)timedata, st->tmpbuf);
-    }
-    else
-    {
-        kiss_fft( st->substate , (const kiss_fft_cpx*)timedata, st->tmpbuf );
-    }
+    // if (do_fft2_acc_offload)
+    // {
+    //     fft2_acc_offload_wrap(st->substate , (const kiss_fft_cpx*)timedata, st->tmpbuf);
+    // }
+    // else
+    // {
+    //     kiss_fft( st->substate , (const kiss_fft_cpx*)timedata, st->tmpbuf );
+    // }
+    kiss_fft( st->substate , (const kiss_fft_cpx*)timedata, st->tmpbuf );
     /* The real part of the DC element of the frequency spectrum in st->tmpbuf
      * contains the sum of the even-numbered elements of the input time sequence
      * The imag part is the sum of the odd-numbered elements
@@ -167,12 +168,13 @@ void kiss_fftri(kiss_fftr_cfg st,const kiss_fft_cpx *freqdata,kiss_fft_scalar *t
 #endif
     }
 
-    if (do_fft2_acc_offload)
-    {
-        fft2_acc_offload_wrap(st->substate, st->tmpbuf, (kiss_fft_cpx *) timedata);
-    }
-    else
-    {
-        kiss_fft (st->substate, st->tmpbuf, (kiss_fft_cpx *) timedata);
-    }
+    // if (do_fft2_acc_offload)
+    // {
+    //     fft2_acc_offload_wrap(st->substate, st->tmpbuf, (kiss_fft_cpx *) timedata);
+    // }
+    // else
+    // {
+    //     kiss_fft (st->substate, st->tmpbuf, (kiss_fft_cpx *) timedata);
+    // }
+    kiss_fft (st->substate, st->tmpbuf, (kiss_fft_cpx *) timedata);
 }

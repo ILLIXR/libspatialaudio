@@ -26,12 +26,22 @@ extern double t_decode_ifft;
 
 extern double t_fft2_acc_mgmt;
 extern double t_fft2_acc;
+extern double t_fir_acc_mgmt;
+extern double t_fir_acc;
 extern double t_decode_fft2_acc_mgmt;
 extern double t_decode_fft2_acc;
+extern double t_decode_fir_acc_mgmt;
+extern double t_decode_fir_acc;
 extern double t_decode_ifft2_acc_mgmt;
 extern double t_decode_ifft2_acc;
 
+extern unsigned m_nFFTBins_copy;
+
+extern void fir_acc_offload(kiss_fft_cpx* array, kiss_fft_cpx* filter);
+extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout);
+
 extern unsigned do_fft2_acc_offload;
+extern bool do_fir_acc_offload;
 
 CAmbisonicBinauralizer::CAmbisonicBinauralizer()
     : m_pFFT_cfg(nullptr, kiss_fftr_free)
@@ -295,36 +305,58 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
                 memcpy(m_pfScratchBufferB.data(), pBFSrc->m_ppfChannels[niChannel], m_nBlockSize * sizeof(float));
                 memset(&m_pfScratchBufferB[m_nBlockSize], 0, (m_nFFTSize - m_nBlockSize) * sizeof(float));
 
-                t_start = clock();
-                kiss_fftr(m_pFFT_cfg.get(), m_pfScratchBufferB.data(), m_pcpScratch.get());
-                t_end = clock();
-                t_diff = double(t_end - t_start);
-                t_decode_fft += t_diff;
-
-                t_decode_fft2_acc += t_fft2_acc;
-                t_decode_fft2_acc_mgmt += t_fft2_acc_mgmt;
-
-                t_start = clock();
-                for(ni = 0; ni < m_nFFTBins; ni++)
+                if (do_fft2_acc_offload)
                 {
-                    cpTemp.r = m_pcpScratch[ni].r * m_ppcpFilters[niEar][niChannel][ni].r
-                                - m_pcpScratch[ni].i * m_ppcpFilters[niEar][niChannel][ni].i;
-                    cpTemp.i = m_pcpScratch[ni].r * m_ppcpFilters[niEar][niChannel][ni].i
-                                + m_pcpScratch[ni].i * m_ppcpFilters[niEar][niChannel][ni].r;
-                    m_pcpScratch[ni] = cpTemp;
+                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (const kiss_fft_cpx*) m_pfScratchBufferB.data(), (m_pFFT_cfg.get())->tmpbuf);
                 }
-                t_end = clock();
-                t_diff = double(t_end - t_start);
-                t_decode_filter += t_diff;
+                else
+                {
+                    t_start = clock();
+                    kiss_fftr(m_pFFT_cfg.get(), m_pfScratchBufferB.data(), m_pcpScratch.get());
+                    t_end = clock();
+                    t_diff = double(t_end - t_start);
+                    t_decode_fft += t_diff;
 
-                t_start = clock();
-                kiss_fftri(m_pIFFT_cfg.get(), m_pcpScratch.get(), m_pfScratchBufferB.data());
-                t_end = clock();
-                t_diff = double(t_end - t_start);
-                t_decode_ifft += t_diff;
+                    t_decode_fft2_acc += t_fft2_acc;
+                    t_decode_fft2_acc_mgmt += t_fft2_acc_mgmt;
+                }
+
+                if (do_fir_acc_offload)
+                {
+                    m_nFFTBins_copy = m_nFFTBins;
+                    fir_acc_offload(m_pcpScratch, m_ppcpFilters[niEar][iChannelOrder]);
+                }
+                else
+                {
+                    t_start = clock();
+                    for(ni = 0; ni < m_nFFTBins; ni++)
+                    {
+                        cpTemp.r = m_pcpScratch[ni].r * m_ppcpFilters[niEar][niChannel][ni].r
+                                    - m_pcpScratch[ni].i * m_ppcpFilters[niEar][niChannel][ni].i;
+                        cpTemp.i = m_pcpScratch[ni].r * m_ppcpFilters[niEar][niChannel][ni].i
+                                    + m_pcpScratch[ni].i * m_ppcpFilters[niEar][niChannel][ni].r;
+                        m_pcpScratch[ni] = cpTemp;
+                    }
+                    t_end = clock();
+                    t_diff = double(t_end - t_start);
+                    t_decode_filter += t_diff;
+                }
+
+                if (do_fft2_acc_offload)
+                {
+                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (m_pFFT_cfg.get())->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferB.data());
+                }
+                else
+                {
+                    t_start = clock();
+                    kiss_fftri(m_pIFFT_cfg.get(), m_pcpScratch.get(), m_pfScratchBufferB.data());
+                    t_end = clock();
+                    t_diff = double(t_end - t_start);
+                    t_decode_ifft += t_diff;
                 
-                t_decode_ifft2_acc += t_fft2_acc;
-                t_decode_ifft2_acc_mgmt += t_fft2_acc_mgmt;
+                    t_decode_ifft2_acc += t_fft2_acc;
+                    t_decode_ifft2_acc_mgmt += t_fft2_acc_mgmt;
+                }
 
                 for(ni = 0; ni < m_nFFTSize; ni++)
                     m_pfScratchBufferA[ni] += m_pfScratchBufferB[ni];
