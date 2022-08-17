@@ -327,7 +327,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
                 if (do_fir_acc_offload)
                 {
                     m_nFFTBins_copy = m_nFFTBins;
-                    fir_acc_offload(m_ppcpFilters[niEar][niChannel]);   // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
+                    fir_acc_offload(m_ppcpFilters[niEar][niChannel].get());   // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
                 }
                 else
                 {
