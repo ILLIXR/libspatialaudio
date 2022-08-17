@@ -53,15 +53,6 @@ typedef struct {
     kiss_fft_scalar i;
 }kiss_fft_cpx;
 
-struct kiss_fftr_state{
-    kiss_fft_cfg substate;
-    kiss_fft_cpx * tmpbuf;
-    kiss_fft_cpx * super_twiddles;
-#ifdef USE_SIMD
-    void * pad;
-#endif
-};
-
 typedef struct kiss_fft_state* kiss_fft_cfg;
 
 /* 
