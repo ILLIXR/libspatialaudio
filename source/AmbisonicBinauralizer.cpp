@@ -42,6 +42,7 @@ extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft
 
 extern unsigned do_fft2_acc_offload;
 extern bool do_fir_acc_offload;
+extern bool run_all;
 
 
 CAmbisonicBinauralizer::CAmbisonicBinauralizer()
