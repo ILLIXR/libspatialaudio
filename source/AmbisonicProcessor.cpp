@@ -47,6 +47,7 @@ extern unsigned do_fft2_acc_offload;
 extern bool do_rotate_acc_offload;
 extern bool do_fir_acc_offload;
 
+extern struct kiss_fftr_state;
 
 struct rotate_params {
     float m_fCosAlpha;
