@@ -41,7 +41,7 @@ unsigned m_nChannelCount_copy;
 unsigned m_nFFTBins_copy;
 
 extern void rotate_order_acc_offload(CBFormat* pBFSrcDst, unsigned nSamples);
-extern void fir_acc_offload(kiss_fft_cpx* filter, bool run_all);
+extern void fir_acc_offload(kiss_fft_cpx* array, kiss_fft_cpx* filter, bool run_all);
 extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT, bool run_all);
 
 extern unsigned do_fft2_acc_offload;
@@ -560,7 +560,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
         if (do_fir_acc_offload)
         {
             m_nFFTBins_copy = m_nFFTBins;
-            fir_acc_offload(m_ppcpPsychFilters[iChannelOrder], run_all); // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
+            fir_acc_offload(m_pcpScratch, m_ppcpPsychFilters[iChannelOrder], run_all); // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
         }
         else
         {
