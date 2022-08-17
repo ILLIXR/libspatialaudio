@@ -15,9 +15,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include "kiss_fftr.h"
 #include "_kiss_fft_guts.h"
 
-extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout);
+// extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT);
 
-extern unsigned do_fft2_acc_offload;
+// extern unsigned do_fft2_acc_offload;
 
 kiss_fftr_cfg kiss_fftr_alloc(int nfft,int inverse_fft,void * mem,size_t * lenmem)
 {
