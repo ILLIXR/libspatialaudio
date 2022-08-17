@@ -16,6 +16,7 @@
 
 #include "AmbisonicProcessor.h"
 #include <iostream>
+#include "kiss_fftr.c"
 
 extern double t_rotate1;
 extern double t_rotate2;
@@ -46,8 +47,6 @@ extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kis
 extern unsigned do_fft2_acc_offload;
 extern bool do_rotate_acc_offload;
 extern bool do_fir_acc_offload;
-
-extern struct kiss_fftr_state;
 
 struct rotate_params {
     float m_fCosAlpha;

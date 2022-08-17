@@ -20,6 +20,8 @@
 
 #include "AmbisonicBinauralizer.h"
 
+#include "kiss_fftr.c"
+
 extern double t_decode_fft;
 extern double t_decode_filter;
 extern double t_decode_ifft;
@@ -43,7 +45,6 @@ extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kis
 extern unsigned do_fft2_acc_offload;
 extern bool do_fir_acc_offload;
 
-extern struct kiss_fftr_state;
 
 CAmbisonicBinauralizer::CAmbisonicBinauralizer()
     : m_pFFT_cfg(nullptr, kiss_fftr_free)
