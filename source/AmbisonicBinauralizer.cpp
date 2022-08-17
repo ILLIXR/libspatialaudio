@@ -37,7 +37,7 @@ extern double t_decode_ifft2_acc;
 
 extern unsigned m_nFFTBins_copy;
 
-extern void fir_acc_offload(kiss_fft_cpx* array, kiss_fft_cpx* filter);
+extern void fir_acc_offload(kiss_fft_cpx* filter);
 extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout);
 
 extern unsigned do_fft2_acc_offload;

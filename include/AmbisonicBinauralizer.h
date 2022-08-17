@@ -27,8 +27,6 @@
 #include "mit_hrtf.h"
 #include "sofa_hrtf.h"
 
-extern struct kiss_fftr_state;
-
 /// Ambisonic binauralizer
 
 /** B-Format to binaural decoder. */

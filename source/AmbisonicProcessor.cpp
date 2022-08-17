@@ -40,7 +40,7 @@ unsigned m_nChannelCount_copy;
 unsigned m_nFFTBins_copy;
 
 extern void rotate_order_acc_offload(CBFormat* pBFSrcDst, unsigned nSamples);
-extern void fir_acc_offload(kiss_fft_cpx* array, kiss_fft_cpx* filter);
+extern void fir_acc_offload(kiss_fft_cpx* filter);
 extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout);
 
 extern unsigned do_fft2_acc_offload;
