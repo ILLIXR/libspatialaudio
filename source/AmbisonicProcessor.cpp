@@ -541,7 +541,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
 
         if (do_fft2_acc_offload)
         {
-            fft2_acc_offload_wrap(m_pFFT_psych_cfg->substate, (const kiss_fft_cpx*) m_pfScratchBufferA, m_pFFT_psych_cfg->tmpbuf);
+            fft2_acc_offload_wrap(m_pFFT_psych_cfg->substate, (const kiss_fft_cpx*) m_pfScratchBufferA, m_pFFT_psych_cfg->tmpbuf, true);
         }
         else
             {
@@ -559,7 +559,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
         if (do_fir_acc_offload)
         {
             m_nFFTBins_copy = m_nFFTBins;
-            fir_acc_offload(m_pcpScratch, m_ppcpPsychFilters[iChannelOrder]);
+            fir_acc_offload(m_ppcpPsychFilters[iChannelOrder]); // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
         }
         else
         {
@@ -579,7 +579,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
 
         if (do_fft2_acc_offload)
         {
-            fft2_acc_offload_wrap(m_pIFFT_psych_cfg->substate, m_pIFFT_psych_cfg->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferA);
+            fft2_acc_offload_wrap(m_pIFFT_psych_cfg->substate, m_pIFFT_psych_cfg->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferA, false);
         }
         else
         {

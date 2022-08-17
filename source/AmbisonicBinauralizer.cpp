@@ -307,7 +307,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
 
                 if (do_fft2_acc_offload)
                 {
-                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (const kiss_fft_cpx*) m_pfScratchBufferB.data(), (m_pFFT_cfg.get())->tmpbuf);
+                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (const kiss_fft_cpx*) m_pfScratchBufferB.data(), (m_pFFT_cfg.get())->tmpbuf, true);
                 }
                 else
                 {
@@ -324,7 +324,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
                 if (do_fir_acc_offload)
                 {
                     m_nFFTBins_copy = m_nFFTBins;
-                    fir_acc_offload(m_pcpScratch, m_ppcpFilters[niEar][iChannelOrder]);
+                    fir_acc_offload(m_ppcpFilters[niEar][niChannel]);   // We are using the same memory space for FFT and FIR, so we only need to convert the filter array
                 }
                 else
                 {
@@ -344,7 +344,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
 
                 if (do_fft2_acc_offload)
                 {
-                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (m_pFFT_cfg.get())->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferB.data());
+                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (m_pFFT_cfg.get())->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferB.data(), false);
                 }
                 else
                 {
