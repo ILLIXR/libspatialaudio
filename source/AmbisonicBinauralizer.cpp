@@ -38,7 +38,7 @@ extern double t_decode_ifft2_acc;
 extern unsigned m_nFFTBins_copy;
 
 extern void fir_acc_offload(kiss_fft_cpx* filter);
-extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT);
+extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT);
 
 extern unsigned do_fft2_acc_offload;
 extern bool do_fir_acc_offload;
@@ -308,7 +308,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
 
                 if (do_fft2_acc_offload)
                 {
-                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (const kiss_fft_cpx*) m_pfScratchBufferB.data(), (m_pFFT_cfg.get())->tmpbuf, true);
+                    fft2_acc_offload((m_pFFT_cfg.get())->substate, (const kiss_fft_cpx*) m_pfScratchBufferB.data(), (m_pFFT_cfg.get())->tmpbuf, true);
                 }
                 else
                 {
@@ -345,7 +345,7 @@ void CAmbisonicBinauralizer::Process(CBFormat* pBFSrc,
 
                 if (do_fft2_acc_offload)
                 {
-                    fft2_acc_offload_wrap((m_pFFT_cfg.get())->substate, (m_pFFT_cfg.get())->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferB.data(), false);
+                    fft2_acc_offload((m_pFFT_cfg.get())->substate, (m_pFFT_cfg.get())->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferB.data(), false);
                 }
                 else
                 {

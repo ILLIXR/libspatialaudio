@@ -42,7 +42,7 @@ unsigned m_nFFTBins_copy;
 
 extern void rotate_order_acc_offload(CBFormat* pBFSrcDst, unsigned nSamples);
 extern void fir_acc_offload(kiss_fft_cpx* filter);
-extern void fft2_acc_offload_wrap(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT);
+extern void fft2_acc_offload(kiss_fft_cfg cfg, const kiss_fft_cpx *fin, kiss_fft_cpx *fout, bool FFT);
 
 extern unsigned do_fft2_acc_offload;
 extern bool do_rotate_acc_offload;
@@ -541,7 +541,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
 
         if (do_fft2_acc_offload)
         {
-            fft2_acc_offload_wrap(m_pFFT_psych_cfg->substate, (const kiss_fft_cpx*) m_pfScratchBufferA, m_pFFT_psych_cfg->tmpbuf, true);
+            fft2_acc_offload(m_pFFT_psych_cfg->substate, (const kiss_fft_cpx*) m_pfScratchBufferA, m_pFFT_psych_cfg->tmpbuf, true);
         }
         else
             {
@@ -579,7 +579,7 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst, unsigned nSample
 
         if (do_fft2_acc_offload)
         {
-            fft2_acc_offload_wrap(m_pIFFT_psych_cfg->substate, m_pIFFT_psych_cfg->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferA, false);
+            fft2_acc_offload(m_pIFFT_psych_cfg->substate, m_pIFFT_psych_cfg->tmpbuf, (kiss_fft_cpx*) m_pfScratchBufferA, false);
         }
         else
         {
