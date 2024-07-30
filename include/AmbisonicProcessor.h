@@ -198,4 +198,61 @@ public:
     float m_fSin3Gamma;
 };
 
+// Mode string for PACT print.
+#if (USE_MONOLITHIC_ACC == 1)
+  #if (DO_CHAIN_OFFLOAD == 1)
+    const char PACT_MODE[] = "Mono_Audio Linux";
+  #elif (DO_NP_CHAIN_OFFLOAD == 1)
+    #if (IS_ESP == 1)
+      #if (COH_MODE == 1)
+        const char PACT_MODE[] = "Mono_Audio Chaining DMA";
+      #else
+        const char PACT_MODE[] = "Mono_Audio Chaining MESI";
+      #endif
+    #else
+      const char PACT_MODE[] = "Mono_Audio Chaining Spandex";
+    #endif 
+  #elif (DO_PP_CHAIN_OFFLOAD == 1)
+    #if (IS_ESP == 1)
+      #if (COH_MODE == 1)
+        const char PACT_MODE[] = "Mono_Audio Pipelining DMA";
+      #else
+        const char PACT_MODE[] = "Mono_Audio Pipelining MESI";
+      #endif
+    #else
+      const char PACT_MODE[] = "Mono_Audio Pipelining Spandex";
+    #endif 
+  #else
+    const char PACT_MODE[] = "Software";
+  #endif
+#else
+  #if (DO_CHAIN_OFFLOAD == 1)
+    const char PACT_MODE[] = "Audio Linux";
+  #elif (DO_NP_CHAIN_OFFLOAD == 1)
+    #if (IS_ESP == 1)
+      #if (COH_MODE == 1)
+        #warning "C Preprocessor got DMA!"
+        const char PACT_MODE[] = "Audio Chaining DMA";
+      #else
+        #warning "C Preprocessor got MESI!"
+        const char PACT_MODE[] = "Audio Chaining MESI";
+      #endif
+    #else
+      const char PACT_MODE[] = "Audio Chaining Spandex";
+    #endif 
+  #elif (DO_PP_CHAIN_OFFLOAD == 1)
+    #if (IS_ESP == 1)
+      #if (COH_MODE == 1)
+        const char PACT_MODE[] = "Audio Pipelining DMA";
+      #else
+        const char PACT_MODE[] = "Audio Pipelining MESI";
+      #endif
+    #else
+      const char PACT_MODE[] = "Audio Pipelining Spandex";
+    #endif 
+  #else
+    const char PACT_MODE[] = "Software";
+  #endif
+#endif
+
 #endif // _AMBISONIC_PROCESSOR_H

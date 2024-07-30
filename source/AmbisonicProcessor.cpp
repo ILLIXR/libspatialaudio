@@ -551,19 +551,22 @@ void CAmbisonicProcessor::ShelfFilterOrder(CBFormat* pBFSrcDst)
 }
 
 void CAmbisonicProcessor::PrintTimeInfo(unsigned factor) {
-    printf("Rotate Order\t\t = %llu\n", TotalTime[5]/factor);
-    printf("\n");
-    printf("---------------------------------------------\n");
-    printf("PSYCHO-ACOUSTIC TIME\n");
-    printf("---------------------------------------------\n");
-    printf("Total Time\t\t = %llu\n", (TotalTime[0] + TotalTime[1] + TotalTime[2] + TotalTime[3] + TotalTime[4])/factor);
+    printf("Result: %s Psycho = %llu\n", PACT_MODE, (TotalTime[0] + TotalTime[1] + TotalTime[2] + TotalTime[3] + TotalTime[4])/factor);
+    printf("Result: %s Rotate = %llu\n", PACT_MODE, TotalTime[5]/factor);
 
-    if (!(DO_FFT_IFFT_OFFLOAD || DO_CHAIN_OFFLOAD || DO_NP_CHAIN_OFFLOAD || DO_PP_CHAIN_OFFLOAD)) {
-        printf("\n");
-        printf("Psycho Init Data\t = %llu\n", TotalTime[0]/factor);
-        printf("Psycho FFT\t\t = %llu\n", TotalTime[1]/factor);
-        printf("Psycho FIR\t\t = %llu\n", TotalTime[2]/factor);
-        printf("Psycho IFFT\t\t = %llu\n", TotalTime[3]/factor);
-        printf("Psycho Overlap\t\t = %llu\n", TotalTime[4]/factor);
-    }
+    // printf("Rotate Order\t\t = %llu\n", TotalTime[5]/factor);
+    // printf("\n");
+    // printf("---------------------------------------------\n");
+    // printf("PSYCHO-ACOUSTIC TIME\n");
+    // printf("---------------------------------------------\n");
+    // printf("Total Time\t\t = %llu\n", (TotalTime[0] + TotalTime[1] + TotalTime[2] + TotalTime[3] + TotalTime[4])/factor);
+
+    // if (!(DO_FFT_IFFT_OFFLOAD || DO_CHAIN_OFFLOAD || DO_NP_CHAIN_OFFLOAD || DO_PP_CHAIN_OFFLOAD)) {
+    //     printf("\n");
+    //     printf("Psycho Init Data\t = %llu\n", TotalTime[0]/factor);
+    //     printf("Psycho FFT\t\t = %llu\n", TotalTime[1]/factor);
+    //     printf("Psycho FIR\t\t = %llu\n", TotalTime[2]/factor);
+    //     printf("Psycho IFFT\t\t = %llu\n", TotalTime[3]/factor);
+    //     printf("Psycho Overlap\t\t = %llu\n", TotalTime[4]/factor);
+    // }
 }
